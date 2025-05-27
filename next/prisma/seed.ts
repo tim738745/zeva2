@@ -771,6 +771,7 @@ const main = () => {
           zevClass: zevClassEnum,
           hasPassedUs06Test: vehicleOld.has_passed_us_06_test,
           isActive: vehicleOld.is_active,
+          vehicleClass: VehicleClass.REPORTABLE,
         },
       });
 
@@ -784,7 +785,9 @@ const main = () => {
 
       if (!newCreateUserId) {
         throw new Error(
-          "vehicle history with id " + historyOld.id + " has unknown create user id!",
+          "vehicle history with id " +
+            historyOld.id +
+            " has unknown create user id!",
         );
       }
 
