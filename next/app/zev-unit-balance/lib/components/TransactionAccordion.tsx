@@ -7,9 +7,12 @@ import {
   SerializedZevUnitTransaction,
 } from "../actions";
 import { useRouter } from "next/navigation";
-import { getReferenceTypeEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
 import { ReferenceType } from "@/prisma/generated/client";
 import { Routes } from "@/app/lib/constants";
+import {
+  getEnumsToStringsMap,
+  statusTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 export default function TransactionAccordion({
   orgId,
@@ -38,7 +41,10 @@ export default function TransactionAccordion({
   };
 
   const referenceTypesMap = useMemo(() => {
-    return getReferenceTypeEnumsToStringsMap();
+    return getEnumsToStringsMap<ReferenceType>(
+      ReferenceType,
+      statusTransformer,
+    );
   }, []);
 
   const getLink = useCallback(

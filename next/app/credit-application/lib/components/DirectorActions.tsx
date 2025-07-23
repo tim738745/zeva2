@@ -21,6 +21,11 @@ export const DirectorActions = (props: {
   const router = useRouter();
   const [comment, setComment] = useState<string>("");
 
+  const refresh = useCallback(() => {
+    setComment("");
+    router.refresh();
+  }, [router]);
+
   const handleViewValidated = useCallback(() => {
     startTransition(() => {
       router.push(
@@ -38,10 +43,10 @@ export const DirectorActions = (props: {
       if (response.responseType === "error") {
         console.error(response.message);
       } else {
-        router.refresh();
+        refresh();
       }
     });
-  }, [props.id, comment, router]);
+  }, [props.id, comment, refresh]);
 
   const handleApprove = useCallback(() => {
     startTransition(async () => {
@@ -53,10 +58,10 @@ export const DirectorActions = (props: {
       if (response.responseType === "error") {
         console.error(response.message);
       } else {
-        router.refresh();
+        refresh();
       }
     });
-  }, [props.id, props.credits, comment, router]);
+  }, [props.id, props.credits, comment, refresh]);
 
   const handleReject = useCallback(() => {
     startTransition(async () => {
@@ -67,10 +72,10 @@ export const DirectorActions = (props: {
       if (response.responseType === "error") {
         console.error(response.message);
       } else {
-        router.refresh();
+        refresh();
       }
     });
-  }, [props.id, comment, router]);
+  }, [props.id, comment, refresh]);
 
   return (
     <>

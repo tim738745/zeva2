@@ -1,10 +1,17 @@
 import {
-  getModelYearEnumsToStringsMap,
-  getPenaltyCreditStatusEnumsToStringsMap,
-  getVehicleClassEnumsToStringsMap,
-  getZevClassEnumsToStringsMap,
-} from "@/app/lib/utils/enumMaps";
+  ModelYear,
+  PenaltyCreditStatus,
+  VehicleClass,
+  ZevClass,
+} from "@/prisma/generated/client";
 import { getPenaltyCredit } from "../data";
+import {
+  getEnumsToStringsMap,
+  lowerCaseAndCapitalize,
+  modelYearsTransformer,
+  statusTransformer,
+  zevClassTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 export const PenaltyCreditDetails = async (props: {
   penaltyCreditId: number;
@@ -13,10 +20,22 @@ export const PenaltyCreditDetails = async (props: {
   if (!penaltyCredit) {
     return null;
   }
-  const modelYearsMap = getModelYearEnumsToStringsMap();
-  const vehicleClassMap = getVehicleClassEnumsToStringsMap();
-  const zevClassMap = getZevClassEnumsToStringsMap();
-  const statusMap = getPenaltyCreditStatusEnumsToStringsMap();
+  const modelYearsMap = getEnumsToStringsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
+  const vehicleClassMap = getEnumsToStringsMap<VehicleClass>(
+    VehicleClass,
+    lowerCaseAndCapitalize,
+  );
+  const zevClassMap = getEnumsToStringsMap<ZevClass>(
+    ZevClass,
+    zevClassTransformer,
+  );
+  const statusMap = getEnumsToStringsMap<PenaltyCreditStatus>(
+    PenaltyCreditStatus,
+    statusTransformer,
+  );
   return (
     <ul>
       <li key={"status"}>Status: {statusMap[penaltyCredit.status]}</li>

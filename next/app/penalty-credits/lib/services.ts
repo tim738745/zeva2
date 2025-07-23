@@ -1,4 +1,3 @@
-import { getStringsToModelYearsEnumsMap } from "@/app/lib/utils/enumMaps";
 import { PenaltyCreditPayload } from "./actions";
 import { prisma } from "@/lib/prisma";
 import {
@@ -8,6 +7,10 @@ import {
 } from "@/prisma/generated/client";
 import { TransactionClient } from "@/types/prisma";
 import { parseComplianceYear } from "./utils";
+import {
+  getStringsToEnumsMap,
+  modelYearsTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 export const validatePenaltyCredit = async (data: PenaltyCreditPayload) => {
   const {
@@ -50,7 +53,10 @@ export const validatePenaltyCredit = async (data: PenaltyCreditPayload) => {
   if (!correspondingDeficit) {
     throw new Error("No corresponding deficit!");
   }
-  const modelYearsStringToEnumsMap = getStringsToModelYearsEnumsMap();
+  const modelYearsStringToEnumsMap = getStringsToEnumsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   const prevYearString = (complianceYearInt - 1).toString();
   const prevYearEnum = modelYearsStringToEnumsMap[prevYearString];
   if (!prevYearEnum) {

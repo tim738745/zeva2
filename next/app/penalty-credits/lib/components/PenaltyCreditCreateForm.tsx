@@ -3,16 +3,18 @@
 import { JSX, useCallback, useMemo, useState, useTransition } from "react";
 import { analystSubmit } from "../actions";
 import { OrgNamesAndIds } from "../data";
-import {
-  getStringsToModelYearsEnumsMap,
-  getStringsToVehicleClassEnumsMap,
-  getStringsToZevClassEnumsMap,
-} from "@/app/lib/utils/enumMaps";
 import { Button } from "@/app/lib/components";
 import { getPenaltyCreditPayload } from "../utilsClient";
-import { ZevClass } from "@/prisma/generated/client";
+import { ModelYear, VehicleClass, ZevClass } from "@/prisma/generated/client";
 import { useRouter } from "next/navigation";
 import { Routes } from "@/app/lib/constants";
+import {
+  getStringsToEnumsMap,
+  lowerCaseAndCapitalize,
+  modelYearsTransformer,
+  statusTransformer,
+  zevClassTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 export const PenaltyCreditCreateForm = (props: {
   orgNamesAndIds: OrgNamesAndIds[];
@@ -43,16 +45,23 @@ export const PenaltyCreditCreateForm = (props: {
   }, [props.orgNamesAndIds]);
 
   const yearOptions = useMemo(() => {
-    return getOptions(getStringsToModelYearsEnumsMap());
+    return getOptions(
+      getStringsToEnumsMap<ModelYear>(ModelYear, modelYearsTransformer),
+    );
   }, []);
 
   const vehicleClassOptions = useMemo(() => {
-    return getOptions(getStringsToVehicleClassEnumsMap());
+    return getOptions(
+      getStringsToEnumsMap<VehicleClass>(VehicleClass, lowerCaseAndCapitalize),
+    );
   }, []);
 
   const zevClassOptions = useMemo(() => {
     const result: JSX.Element[] = [];
-    const zevClassMap = getStringsToZevClassEnumsMap();
+    const zevClassMap = getStringsToEnumsMap<ZevClass>(
+      ZevClass,
+      zevClassTransformer,
+    );
     for (const [s, e] of Object.entries(zevClassMap)) {
       if (e === ZevClass.A || e === ZevClass.UNSPECIFIED) {
         result.push(

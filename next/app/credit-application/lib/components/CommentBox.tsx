@@ -11,18 +11,10 @@ export const CommentBox = ({
 }) => {
   return (
     <textarea
+      className="w-full min-h-20 p-2 border border-solid border-gray-300 rounded-1 mb-4 resize-y"
       value={comment}
       onChange={(e) => setComment(e.target.value)}
       placeholder="Optional comment"
-      style={{
-        minHeight: "80px",
-        padding: "8px",
-        border: "1px solid #ccc",
-        borderRadius: "4px",
-        resize: "vertical",
-        marginBottom: "1rem",
-        width: "100%",
-      }}
     />
   );
 };

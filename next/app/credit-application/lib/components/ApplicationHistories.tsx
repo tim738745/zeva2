@@ -2,7 +2,14 @@ import { getIsoYmdString, getTimeWithTz } from "@/app/lib/utils/date";
 import { getApplicationHistories } from "../data";
 import { JSX } from "react";
 import { getUserInfo } from "@/auth";
-import { CreditApplicationSupplierStatus } from "@/prisma/generated/client";
+import {
+  CreditApplicationStatus,
+  CreditApplicationSupplierStatus,
+} from "@/prisma/generated/client";
+import {
+  getEnumsToStringsMap,
+  statusTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 export const ApplicationHistories = async (props: { id: number }) => {
   const histories = await getApplicationHistories(props.id);
@@ -10,6 +17,10 @@ export const ApplicationHistories = async (props: { id: number }) => {
   if (histories.length > 0) {
     const supplierStatuses = Object.values(CreditApplicationSupplierStatus);
     const entries: JSX.Element[] = [];
+    const statusMap = getEnumsToStringsMap<CreditApplicationStatus>(
+      CreditApplicationStatus,
+      statusTransformer,
+    );
     histories.forEach((history) => {
       let name = `${history.user.firstName} ${history.user.lastName}`;
       let userAction = history.userAction;
@@ -17,17 +28,18 @@ export const ApplicationHistories = async (props: { id: number }) => {
         name = "Government of BC";
       }
       entries.push(
-        <div key={history.id}>
-          <div>{`The user ${name} made the application ${history.userAction} on ${getIsoYmdString(history.timestamp)}, at ${getTimeWithTz(history.timestamp)}`}</div>
+        <li key={history.id}>
+          <p key="content">{`[${name}] made the application "${statusMap[history.userAction]}" on ${getIsoYmdString(history.timestamp)}, 
+          at ${getTimeWithTz(history.timestamp)}`}</p>
           {history.comment && (
-            <div>
-              {`Comment associated with this history entry: ${history.comment}`}
-            </div>
+            <p key="comment">
+              {`Comment associated with this history entry, written by [${name}]: "${history.comment}"`}
+            </p>
           )}
-        </div>,
+        </li>,
       );
     });
-    return <>{entries}</>;
+    return <ul className="space-y-3">{entries}</ul>;
   }
   return null;
 };

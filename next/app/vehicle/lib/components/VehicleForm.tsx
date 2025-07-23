@@ -8,16 +8,20 @@ import {
   useEffect,
 } from "react";
 import {
+  ModelYear,
   VehicleClassCode,
   VehicleStatus,
   VehicleZevType,
 } from "@/prisma/generated/client";
 import { getVehiclePayload } from "../utilsClient";
 import { SerializedVehicleWithOrg } from "../data";
-import { getModelYearEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
 import { createOrUpdateVehicle } from "../actions";
 import { useRouter } from "next/navigation";
 import { Routes } from "@/app/lib/constants";
+import {
+  getEnumsToStringsMap,
+  modelYearsTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 export function VehicleForm(props: { vehicle?: SerializedVehicleWithOrg }) {
   const router = useRouter();
@@ -26,7 +30,7 @@ export function VehicleForm(props: { vehicle?: SerializedVehicleWithOrg }) {
   const [formData, setFormData] = useState<Partial<Record<string, string>>>({});
 
   const modelYearsMap = useMemo(() => {
-    return getModelYearEnumsToStringsMap();
+    return getEnumsToStringsMap<ModelYear>(ModelYear, modelYearsTransformer);
   }, []);
 
   useEffect(() => {

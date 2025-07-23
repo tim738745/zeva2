@@ -1,11 +1,14 @@
-import { VehicleStatus } from "@/prisma/generated/client";
+import { ModelYear, VehicleStatus } from "@/prisma/generated/client";
 import { VehiclePayload } from "./actions";
 import { Decimal } from "@prisma/client/runtime/index-browser.js";
-import { getStringsToModelYearsEnumsMap } from "@/app/lib/utils/enumMaps";
 import {
   isVehicleClassCode,
   isVehicleZevType,
 } from "@/app/lib/utils/typeGuards";
+import {
+  getStringsToEnumsMap,
+  modelYearsTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 export const getVehiclePayload = (
   data: Partial<Record<string, string>>,
@@ -22,7 +25,10 @@ export const getVehiclePayload = (
   ) {
     throw new Error("All fields are required!");
   }
-  const modelYearsMap = getStringsToModelYearsEnumsMap();
+  const modelYearsMap = getStringsToEnumsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   const modelYearEnum = modelYearsMap[data.modelYear];
   if (!modelYearEnum) {
     throw new Error("Invalid Model Year!");

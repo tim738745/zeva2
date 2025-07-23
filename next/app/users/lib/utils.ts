@@ -1,4 +1,7 @@
-import { getStringsToRoleEnumsMap } from "@/app/lib/utils/enumMaps";
+import {
+  getStringsToEnumsMap,
+  roleTransformer,
+} from "@/app/lib/utils/enumMaps";
 import { getUserInfo } from "@/auth";
 import { UserWithOrg } from "@/lib/data/user";
 import { Prisma, Role } from "@/prisma/generated/client";
@@ -69,7 +72,7 @@ export const getWhereClause = (
         },
       };
     } else if (key === "roles") {
-      const rolesMap = getStringsToRoleEnumsMap();
+      const rolesMap = getStringsToEnumsMap<Role>(Role, roleTransformer);
       const newValue = value.replaceAll(" ", "").toLowerCase();
       const matches: Role[] = [];
       Object.entries(rolesMap).forEach(([role, roleEnum]) => {

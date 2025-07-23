@@ -1,11 +1,18 @@
+import { ModelYear } from "@/prisma/generated/client";
 import { SerializedVehicleWithOrg } from "../data";
 import Link from "next/link";
+import {
+  getEnumsToStringsMap,
+  modelYearsTransformer,
+} from "@/app/lib/utils/enumMaps";
 type VehicleProps = {
   vehicle: SerializedVehicleWithOrg;
 };
-import { getModelYearEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
 const VehicleDetails = async ({ vehicle }: VehicleProps) => {
-  const modelYearMap = getModelYearEnumsToStringsMap();
+  const modelYearMap = getEnumsToStringsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   if (vehicle) {
     return (
       <div key={vehicle.id}>

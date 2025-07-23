@@ -6,7 +6,6 @@ import {
   VehicleStatus,
   Prisma,
 } from "@/prisma/generated/client";
-import { getStringsToModelYearsEnumsMap } from "@/app/lib/utils/enumMaps";
 import {
   CreditApplicationSubDirectory,
   SupplierTemplateZEVsSuppliedSheetHeaderNames,
@@ -19,6 +18,10 @@ import {
   CreditApplicationSparse,
 } from "./data";
 import { getIsoYmdString, validateDate } from "@/app/lib/utils/date";
+import {
+  getStringsToEnumsMap,
+  modelYearsTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 export const getCreditApplicationFullObjectName = (
   userOrgId: number,
@@ -139,7 +142,10 @@ export const getRecordsWhereClause = (
   filters: Record<string, string>,
 ): Prisma.CreditApplicationRecordWhereInput => {
   const result: Prisma.CreditApplicationRecordWhereInput = {};
-  const modelYearsMap = getStringsToModelYearsEnumsMap();
+  const modelYearsMap = getStringsToEnumsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   Object.entries(filters).forEach(([key, value]) => {
     if (key === "validated") {
       const newValue = value.toLowerCase().trim();
@@ -315,7 +321,10 @@ export const parseSupplierSubmission = (sheet: Excel.Worksheet) => {
   const duplicateVins: string[] = [];
   const invalidRows: number[] = [];
   const headersIndex = SupplierTemplateZEVsSuppliedSheetData.HeaderIndex;
-  const modelYearsMap = getStringsToModelYearsEnumsMap();
+  const modelYearsMap = getStringsToEnumsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   const headers = sheet.getRow(headersIndex);
   const headersMap = getColsToHeadersMap(headers);
   const requiredHeaders = Object.values(

@@ -4,7 +4,11 @@ import React, { useMemo } from "react";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Table } from "@/app/lib/components";
 import { VehicleSparseSerialized } from "./VehicleList";
-import { getModelYearEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
+import {
+  getEnumsToStringsMap,
+  modelYearsTransformer,
+} from "@/app/lib/utils/enumMaps";
+import { ModelYear } from "@/prisma/generated/client";
 
 export const VehicleTable = (props: {
   vehicles: VehicleSparseSerialized[];
@@ -12,7 +16,10 @@ export const VehicleTable = (props: {
   navigationAction: (id: number) => Promise<void>;
 }) => {
   const columnHelper = createColumnHelper<VehicleSparseSerialized>();
-  const modelYearEnumMap = getModelYearEnumsToStringsMap();
+  const modelYearEnumMap = getEnumsToStringsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   const columns = useMemo(() => {
     const result: ColumnDef<VehicleSparseSerialized, any>[] = [
       columnHelper.accessor((row) => row.status, {

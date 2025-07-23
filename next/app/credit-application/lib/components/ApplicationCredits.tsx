@@ -1,11 +1,18 @@
 import { JSX } from "react";
 import { CreditApplicationCredit } from "../data";
-import { getModelYearEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
+import {
+  getEnumsToStringsMap,
+  modelYearsTransformer,
+} from "@/app/lib/utils/enumMaps";
+import { ModelYear } from "@/prisma/generated/client";
 
 export const ApplicationCredits = (props: {
   credits: CreditApplicationCredit[];
 }) => {
-  const modelYearsMap = getModelYearEnumsToStringsMap();
+  const modelYearsMap = getEnumsToStringsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   const rows: JSX.Element[] = [];
   let counter = 0;
   props.credits.forEach((credit) => {

@@ -5,9 +5,11 @@ import { Table } from "@/app/lib/components";
 import { useMemo } from "react";
 import { PenaltyCreditSparse } from "../data";
 import {
-  getModelYearEnumsToStringsMap,
-  getPenaltyCreditStatusEnumsToStringsMap,
+  getEnumsToStringsMap,
+  modelYearsTransformer,
+  statusTransformer,
 } from "@/app/lib/utils/enumMaps";
+import { ModelYear, PenaltyCreditStatus } from "@/prisma/generated/client";
 
 export const PenaltyCreditsTable = (props: {
   credits: PenaltyCreditSparse[];
@@ -16,8 +18,14 @@ export const PenaltyCreditsTable = (props: {
 }) => {
   const columnHelper = createColumnHelper<PenaltyCreditSparse>();
   const columns = useMemo(() => {
-    const modelYearsMap = getModelYearEnumsToStringsMap();
-    const statusesMap = getPenaltyCreditStatusEnumsToStringsMap();
+    const modelYearsMap = getEnumsToStringsMap<ModelYear>(
+      ModelYear,
+      modelYearsTransformer,
+    );
+    const statusesMap = getEnumsToStringsMap<PenaltyCreditStatus>(
+      PenaltyCreditStatus,
+      statusTransformer,
+    );
     const result: ColumnDef<PenaltyCreditSparse, any>[] = [
       columnHelper.accessor((row) => row.id, {
         id: "id",

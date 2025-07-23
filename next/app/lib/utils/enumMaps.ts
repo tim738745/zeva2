@@ -4,15 +4,7 @@
 // to overcome this issue, we can use the maps below; not great from a maintenance perspective,
 // so hopefully prisma addresses this soon!
 
-import {
-  VehicleClass,
-  ZevClass,
-  ModelYear,
-  PenaltyCreditStatus,
-  Idp,
-  Role,
-  ReferenceType,
-} from "@/prisma/generated/client";
+import { Role } from "@/prisma/generated/client";
 
 export const lowerCaseAndCapitalize = (s: string) => {
   const firstLetter = s.charAt(0);
@@ -20,7 +12,7 @@ export const lowerCaseAndCapitalize = (s: string) => {
   return firstLetter + lowerCasedTail;
 };
 
-const getTransformed = (s: string) => {
+export const statusTransformer = (s: string) => {
   const splitString = s.split("_");
   const transformed = splitString.map((t) => {
     return lowerCaseAndCapitalize(t);
@@ -28,134 +20,48 @@ const getTransformed = (s: string) => {
   return transformed.join(" ");
 };
 
-export const getModelYearEnumsToStringsMap = () => {
-  const result: Partial<Record<ModelYear, string>> = {};
-  for (const value of Object.values(ModelYear)) {
-    result[value] = value.split("_")[1];
+export const modelYearsTransformer = (s: string) => {
+  return s.split("_")[1];
+};
+
+export const zevClassTransformer = (s: string) => {
+  if (s.length > 1) {
+    return lowerCaseAndCapitalize(s);
+  }
+  return s;
+};
+
+export const idpTransformer = (s: string) => {
+  return s.toLowerCase().replaceAll("_", "");
+};
+
+export const roleTransformer = (s: string) => {
+  if (s === Role.ENGINEER_ANALYST) {
+    return "Engineer/Analyst";
+  } else if (s === Role.ZEVA_USER) {
+    return "ZEVA User";
+  }
+  return statusTransformer(s);
+};
+
+export const getStringsToEnumsMap = <E extends string>(
+  enumInQuestion: Record<string, E>,
+  transformer: (s: string) => string,
+) => {
+  const result: Partial<Record<string, E>> = {};
+  for (const value of Object.values(enumInQuestion)) {
+    result[transformer(value)] = value;
   }
   return result;
 };
 
-export const getStringsToModelYearsEnumsMap = () => {
-  const result: Partial<Record<string, ModelYear>> = {};
-  for (const value of Object.values(ModelYear)) {
-    result[value.split("_")[1]] = value;
-  }
-  return result;
-};
-
-export const getZevClassEnumsToStringsMap = () => {
-  const result: Partial<Record<ZevClass, string>> = {};
-  for (const value of Object.values(ZevClass)) {
-    if (value.length > 1) {
-      result[value] = lowerCaseAndCapitalize(value);
-    } else {
-      result[value] = value;
-    }
-  }
-  return result;
-};
-
-export const getStringsToZevClassEnumsMap = () => {
-  const result: Partial<Record<string, ZevClass>> = {};
-  for (const value of Object.values(ZevClass)) {
-    if (value.length > 1) {
-      result[lowerCaseAndCapitalize(value)] = value;
-    } else {
-      result[value] = value;
-    }
-  }
-  return result;
-};
-
-export const getVehicleClassEnumsToStringsMap = () => {
-  const result: Partial<Record<VehicleClass, string>> = {};
-  for (const value of Object.values(VehicleClass)) {
-    result[value] = lowerCaseAndCapitalize(value);
-  }
-  return result;
-};
-
-export const getStringsToVehicleClassEnumsMap = () => {
-  const result: Partial<Record<string, VehicleClass>> = {};
-  for (const value of Object.values(VehicleClass)) {
-    result[lowerCaseAndCapitalize(value)] = value;
-  }
-  return result;
-};
-
-export const getPenaltyCreditStatusEnumsToStringsMap = () => {
-  const result: Partial<Record<PenaltyCreditStatus, string>> = {};
-  for (const value of Object.values(PenaltyCreditStatus)) {
-    result[value] = getTransformed(value);
-  }
-  return result;
-};
-
-export const getStringsToPenaltyCreditStatusEnumsMap = () => {
-  const result: Partial<Record<string, PenaltyCreditStatus>> = {};
-  for (const value of Object.values(PenaltyCreditStatus)) {
-    result[getTransformed(value)] = value;
-  }
-  return result;
-};
-
-export const getStringsToIdpEnumsMap = () => {
-  const result: Partial<Record<string, Idp>> = {};
-  for (const value of Object.values(Idp)) {
-    result[value.toLowerCase().replaceAll("_", "")] = value;
-  }
-  return result;
-};
-
-export const getIdpEnumsToStringsMap = () => {
-  const result: Partial<Record<Idp, string>> = {};
-  for (const value of Object.values(Idp)) {
-    result[value] = value.toLowerCase().replaceAll("_", "");
-  }
-  return result;
-};
-
-export const getStringsToRoleEnumsMap = () => {
-  const result: Partial<Record<string, Role>> = {};
-  for (const value of Object.values(Role)) {
-    if (value === Role.ENGINEER_ANALYST) {
-      result["Engineer/Analyst"] = value;
-    } else if (value === Role.ZEVA_USER) {
-      result["ZEVA User"] = value;
-    } else {
-      result[getTransformed(value)] = value;
-    }
-  }
-  return result;
-};
-
-export const getRoleEnumsToStringsMap = () => {
-  const result: Partial<Record<Role, string>> = {};
-  for (const value of Object.values(Role)) {
-    if (value === Role.ENGINEER_ANALYST) {
-      result[value] = "Engineer/Analyst";
-    } else if (value === Role.ZEVA_USER) {
-      result[value] = "ZEVA User";
-    } else {
-      result[value] = getTransformed(value);
-    }
-  }
-  return result;
-};
-
-export const getStringsToReferenceTypeEnumsMap = () => {
-  const result: Partial<Record<string, ReferenceType>> = {};
-  for (const value of Object.values(ReferenceType)) {
-    result[getTransformed(value)] = value;
-  }
-  return result;
-};
-
-export const getReferenceTypeEnumsToStringsMap = () => {
-  const result: Partial<Record<ReferenceType, string>> = {};
-  for (const value of Object.values(ReferenceType)) {
-    result[value] = getTransformed(value);
+export const getEnumsToStringsMap = <E extends string>(
+  enumInQuestion: Record<string, E>,
+  transformer: (s: string) => string,
+) => {
+  const result: Partial<Record<E, string>> = {};
+  for (const value of Object.values(enumInQuestion)) {
+    result[value] = transformer(value);
   }
   return result;
 };

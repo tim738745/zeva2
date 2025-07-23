@@ -2,7 +2,11 @@ import { Button, ContentCard } from "@/app/lib/components";
 import Link from "next/link";
 import { getUser } from "../lib/data";
 import { Routes } from "@/app/lib/constants";
-import { getRoleEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
+import { Role } from "@/prisma/generated/client";
+import {
+  getEnumsToStringsMap,
+  roleTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 const Page = async (props: { params: Promise<{ id: string }> }) => {
   const args = await props.params;
@@ -11,7 +15,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
   if (!user) {
     return null;
   }
-  const rolesMap = getRoleEnumsToStringsMap();
+  const rolesMap = getEnumsToStringsMap<Role>(Role, roleTransformer);
   const roles = user.roles.map((role) => {
     return rolesMap[role] ?? "";
   });

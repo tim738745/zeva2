@@ -1,7 +1,10 @@
-import { getStringsToRoleEnumsMap } from "@/app/lib/utils/enumMaps";
 import { prismaOld } from "@/lib/prismaOld";
 import { TransactionClient } from "@/types/prisma";
 import { Idp, Role } from "../generated/client";
+import {
+  getStringsToEnumsMap,
+  roleTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 export const seedUsers = async (
   tx: TransactionClient,
@@ -13,7 +16,7 @@ export const seedUsers = async (
       organization: true,
     },
   });
-  const rolesMap = getStringsToRoleEnumsMap();
+  const rolesMap = getStringsToEnumsMap<Role>(Role, roleTransformer);
   for (const userOld of usersOld) {
     if (!userOld.organization_id || !userOld.organization) {
       throw new Error("user " + userOld.id + " with no org id!");

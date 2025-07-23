@@ -4,6 +4,11 @@ import { CreditApplicationSparseSerialized } from "../utils";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Table } from "@/app/lib/components";
 import { useMemo } from "react";
+import {
+  getEnumsToStringsMap,
+  statusTransformer,
+} from "@/app/lib/utils/enumMaps";
+import { CreditApplicationStatus } from "@/prisma/generated/client";
 
 export const ApplicationsTable = (props: {
   applications: CreditApplicationSparseSerialized[];
@@ -12,6 +17,10 @@ export const ApplicationsTable = (props: {
 }) => {
   const columnHelper = createColumnHelper<CreditApplicationSparseSerialized>();
   const columns = useMemo(() => {
+    const statusesMap = getEnumsToStringsMap<CreditApplicationStatus>(
+      CreditApplicationStatus,
+      statusTransformer,
+    );
     const result: ColumnDef<CreditApplicationSparseSerialized, any>[] = [
       columnHelper.accessor((row) => row.id, {
         id: "id",
@@ -25,7 +34,7 @@ export const ApplicationsTable = (props: {
         enableColumnFilter: true,
         header: () => <span>Date</span>,
       }),
-      columnHelper.accessor((row) => row.status, {
+      columnHelper.accessor((row) => statusesMap[row.status], {
         id: "status",
         enableSorting: true,
         enableColumnFilter: true,

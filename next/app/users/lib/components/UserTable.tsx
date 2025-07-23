@@ -4,7 +4,11 @@ import React, { useMemo } from "react";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Table } from "@/app/lib/components";
 import type { UserWithOrgName } from "../data";
-import { getRoleEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
+import {
+  getEnumsToStringsMap,
+  roleTransformer,
+} from "@/app/lib/utils/enumMaps";
+import { Role } from "@/prisma/generated/client";
 
 export interface UserTableProps {
   users: UserWithOrgName[];
@@ -22,7 +26,7 @@ export default function UserTable({
   const columnHelper = createColumnHelper<UserWithOrgName>();
 
   const rolesMap = useMemo(() => {
-    return getRoleEnumsToStringsMap();
+    return getEnumsToStringsMap<Role>(Role, roleTransformer);
   }, []);
 
   const columns = useMemo<ColumnDef<UserWithOrgName, any>[]>(() => {

@@ -1,10 +1,17 @@
 import { Job } from "bullmq";
 import { prisma } from "@/lib/prisma";
 import { getObject } from "@/app/lib/minio";
-import { IcbcFileStatus, IcbcRecord } from "@/prisma/generated/client";
+import {
+  IcbcFileStatus,
+  IcbcRecord,
+  ModelYear,
+} from "@/prisma/generated/client";
 import { parse } from "fast-csv";
-import { getStringsToModelYearsEnumsMap } from "@/app/lib/utils/enumMaps";
 import { TransactionClient } from "@/types/prisma";
+import {
+  getStringsToEnumsMap,
+  modelYearsTransformer,
+} from "@/app/lib/utils/enumMaps";
 
 type Row = { [key: string]: string };
 
@@ -108,7 +115,10 @@ const deleteAndCreate = async (
   icbcFileId: number,
   tx: TransactionClient,
 ) => {
-  const modelYearsMap = getStringsToModelYearsEnumsMap();
+  const modelYearsMap = getStringsToEnumsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   const vins = Object.keys(map);
   const toCreate: Omit<IcbcRecord, "id">[] = [];
   for (const [vin, data] of Object.entries(map)) {

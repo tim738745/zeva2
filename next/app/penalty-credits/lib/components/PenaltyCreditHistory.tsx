@@ -1,7 +1,11 @@
 import { JSX } from "react";
 import { getPenaltyCreditHistories } from "../data";
 import { getIsoYmdString, getTimeWithTz } from "@/app/lib/utils/date";
-import { getPenaltyCreditStatusEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
+import {
+  getEnumsToStringsMap,
+  statusTransformer,
+} from "@/app/lib/utils/enumMaps";
+import { PenaltyCreditStatus } from "@/prisma/generated/client";
 
 export const PenaltyCreditHistory = async (props: {
   penaltyCreditId: number;
@@ -10,7 +14,10 @@ export const PenaltyCreditHistory = async (props: {
   if (histories.length === 0) {
     return null;
   }
-  const statusMap = getPenaltyCreditStatusEnumsToStringsMap();
+  const statusMap = getEnumsToStringsMap<PenaltyCreditStatus>(
+    PenaltyCreditStatus,
+    statusTransformer,
+  );
   const entries: JSX.Element[] = [];
   histories.forEach((history) => {
     const name = `${history.user.firstName} ${history.user.lastName}`;

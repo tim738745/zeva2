@@ -1,4 +1,4 @@
-import { getStringsToIdpEnumsMap } from "@/app/lib/utils/enumMaps";
+import { getStringsToEnumsMap, idpTransformer } from "@/app/lib/utils/enumMaps";
 import { prisma } from "@/lib/prisma";
 import { Idp, Organization, User } from "@/prisma/generated/client";
 import { Profile } from "next-auth";
@@ -20,7 +20,7 @@ export const getActiveUser = async (
   if (user) {
     return user;
   }
-  const idpMap = getStringsToIdpEnumsMap();
+  const idpMap = getStringsToEnumsMap<Idp>(Idp, idpTransformer);
   const idpEnum = idpMap[idp];
   if (!idpEnum) {
     return null;

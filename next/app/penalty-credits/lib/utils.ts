@@ -1,6 +1,7 @@
 import {
-  getModelYearEnumsToStringsMap,
-  getStringsToModelYearsEnumsMap,
+  getEnumsToStringsMap,
+  getStringsToEnumsMap,
+  modelYearsTransformer,
 } from "@/app/lib/utils/enumMaps";
 import {
   ModelYear,
@@ -11,7 +12,10 @@ import {
 export const parseComplianceYear = (
   complianceYear: ModelYear,
 ): [string, number] => {
-  const modelYearsMap = getModelYearEnumsToStringsMap();
+  const modelYearsMap = getEnumsToStringsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   const complianceYearString = modelYearsMap[complianceYear];
   if (!complianceYearString) {
     throw new Error("Invalid Compliance Year!");
@@ -34,7 +38,10 @@ export const getWhereClause = (
   filters: Record<string, string>,
 ): Prisma.PenaltyCreditWhereInput => {
   const result: Prisma.PenaltyCreditWhereInput = {};
-  const modelYearsMap = getStringsToModelYearsEnumsMap();
+  const modelYearsMap = getStringsToEnumsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   Object.entries(filters).forEach(([key, value]) => {
     if (key === "id") {
       result[key] = parseInt(value, 10);

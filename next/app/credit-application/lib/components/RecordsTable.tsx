@@ -12,8 +12,12 @@ import {
 import { Button, ContentCard, Table } from "@/app/lib/components";
 import { ReasonsMap, updateValidatedRecords, ValidatedMap } from "../actions";
 import { useRouter } from "next/navigation";
-import { getModelYearEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
 import { CreditApplicationRecordSparseSerialized } from "../utils";
+import {
+  getEnumsToStringsMap,
+  modelYearsTransformer,
+} from "@/app/lib/utils/enumMaps";
+import { ModelYear } from "@/prisma/generated/client";
 
 export const RecordsTable = (props: {
   id: number;
@@ -94,7 +98,7 @@ export const RecordsTable = (props: {
   }, [props.id, validatedMap, reasonsMap, router]);
 
   const modelYearsMap = useMemo(() => {
-    return getModelYearEnumsToStringsMap();
+    return getEnumsToStringsMap<ModelYear>(ModelYear, modelYearsTransformer);
   }, []);
 
   const getHighlighted = useCallback(

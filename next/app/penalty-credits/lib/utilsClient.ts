@@ -1,10 +1,12 @@
 import {
-  getStringsToModelYearsEnumsMap,
-  getStringsToVehicleClassEnumsMap,
-  getStringsToZevClassEnumsMap,
+  getStringsToEnumsMap,
+  lowerCaseAndCapitalize,
+  modelYearsTransformer,
+  zevClassTransformer,
 } from "@/app/lib/utils/enumMaps";
 import { PenaltyCreditPayload } from "./actions";
 import { Decimal } from "@/prisma/generated/client/runtime/index-browser";
+import { ModelYear, VehicleClass, ZevClass } from "@/prisma/generated/client";
 
 const MissingInputError = new Error(
   "All fields, except for the comment field, are required!",
@@ -38,12 +40,21 @@ export const getPenaltyCreditPayload = (
     throw InvalidInputError;
   }
 
-  const modelYearsMap = getStringsToModelYearsEnumsMap();
+  const modelYearsMap = getStringsToEnumsMap<ModelYear>(
+    ModelYear,
+    modelYearsTransformer,
+  );
   const complianceYearEnum = modelYearsMap[complianceYear];
   const modelYearEnum = modelYearsMap[modelYear];
-  const vehicleClassMap = getStringsToVehicleClassEnumsMap();
+  const vehicleClassMap = getStringsToEnumsMap<VehicleClass>(
+    VehicleClass,
+    lowerCaseAndCapitalize,
+  );
   const vehicleClassEnum = vehicleClassMap[vehicleClass];
-  const zevClassMap = getStringsToZevClassEnumsMap();
+  const zevClassMap = getStringsToEnumsMap<ZevClass>(
+    ZevClass,
+    zevClassTransformer,
+  );
   const zevClassEnum = zevClassMap[zevClass];
 
   if (

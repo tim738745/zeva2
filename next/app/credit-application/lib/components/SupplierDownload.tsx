@@ -8,10 +8,14 @@ import {
   getSupplierTemplateDownloadUrl,
 } from "../actions";
 import { SupplierTemplate } from "../constants";
-import { getModelYearEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
 import { Button } from "@/app/lib/components";
 import { LoadingSkeleton } from "@/app/lib/components/skeletons";
 import { downloadBuffer } from "@/app/lib/utils/download";
+import {
+  getEnumsToStringsMap,
+  modelYearsTransformer,
+} from "@/app/lib/utils/enumMaps";
+import { ModelYear } from "@/prisma/generated/client";
 
 export const SupplierDownload = (props: { userOrgName: string }) => {
   const [isPending, startTransition] = useTransition();
@@ -31,7 +35,10 @@ export const SupplierDownload = (props: { userOrgName: string }) => {
           SupplierTemplate.ValidVehiclesSheetName,
         );
         if (vehiclesSheet) {
-          const modelYearsMap = getModelYearEnumsToStringsMap();
+          const modelYearsMap = getEnumsToStringsMap<ModelYear>(
+            ModelYear,
+            modelYearsTransformer,
+          );
           vehicles.forEach((vehicle) => {
             vehiclesSheet.addRow([
               vehicle.make,

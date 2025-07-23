@@ -1,6 +1,9 @@
 "use client";
 
-import { getRoleEnumsToStringsMap } from "@/app/lib/utils/enumMaps";
+import {
+  getEnumsToStringsMap,
+  roleTransformer,
+} from "@/app/lib/utils/enumMaps";
 import { Role } from "@/prisma/generated/client";
 import { useMemo } from "react";
 
@@ -18,7 +21,7 @@ export function UserFormFields({
   toggleRole: (role: Role) => void;
 }) {
   const rolesMap = useMemo(() => {
-    return getRoleEnumsToStringsMap();
+    return getEnumsToStringsMap<Role>(Role, roleTransformer);
   }, []);
 
   const availableRoles = useMemo(() => {
