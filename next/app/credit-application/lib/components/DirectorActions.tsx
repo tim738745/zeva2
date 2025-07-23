@@ -90,7 +90,11 @@ export const DirectorActions = (props: {
       {(props.status === CreditApplicationStatus.RECOMMEND_APPROVAL ||
         props.status === CreditApplicationStatus.RECOMMEND_REJECTION) && (
         <>
-          <CommentBox comment={comment} setComment={setComment} />
+          <CommentBox
+            comment={comment}
+            setComment={setComment}
+            disabled={isPending}
+          />
           <Button onClick={handleReturn} disabled={isPending}>
             {isPending ? "..." : "Return to Analyst"}
           </Button>
