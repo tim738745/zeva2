@@ -83,9 +83,6 @@ export const AnalystActions = (props: {
 
   return (
     <>
-      {props.validatedBefore && (
-        <CommentBox comment={comment} setComment={setComment} />
-      )}
       {(props.status === CreditApplicationStatus.SUBMITTED ||
         props.status === CreditApplicationStatus.RETURNED_TO_ANALYST) && (
         <Button onClick={handleValidate} disabled={isPending}>
@@ -108,6 +105,7 @@ export const AnalystActions = (props: {
         props.status === CreditApplicationStatus.RETURNED_TO_ANALYST) &&
         props.validatedBefore && (
           <>
+            <CommentBox comment={comment} setComment={setComment} />
             <Button
               onClick={() => {
                 handleGoToValidated(true);

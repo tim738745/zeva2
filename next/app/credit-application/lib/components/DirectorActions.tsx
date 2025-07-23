@@ -79,7 +79,6 @@ export const DirectorActions = (props: {
 
   return (
     <>
-      <CommentBox comment={comment} setComment={setComment} />
       {(props.status === CreditApplicationStatus.RECOMMEND_APPROVAL ||
         props.status === CreditApplicationStatus.RECOMMEND_REJECTION ||
         props.status === CreditApplicationStatus.APPROVED ||
@@ -90,9 +89,12 @@ export const DirectorActions = (props: {
       )}
       {(props.status === CreditApplicationStatus.RECOMMEND_APPROVAL ||
         props.status === CreditApplicationStatus.RECOMMEND_REJECTION) && (
-        <Button onClick={handleReturn} disabled={isPending}>
-          {isPending ? "..." : "Return to Analyst"}
-        </Button>
+        <>
+          <CommentBox comment={comment} setComment={setComment} />
+          <Button onClick={handleReturn} disabled={isPending}>
+            {isPending ? "..." : "Return to Analyst"}
+          </Button>
+        </>
       )}
       {props.status === CreditApplicationStatus.RECOMMEND_APPROVAL && (
         <Button onClick={handleApprove} disabled={isPending}>
