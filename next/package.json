@@ -30,8 +30,8 @@
     "exceljs": "4.4.0",
     "jszip": "^3.10.1",
     "minio": "^8.0.5",
-    "next": "15.5.3",
-    "next-auth": "^5.0.0-beta.25",
+    "next": "16.0.7",
+    "next-auth": "5.0.0-beta.30",
     "next-navigation-guard": "^0.2.0",
     "prisma": "6.15.0",
     "react": "^19.0.0",
@@ -57,5 +57,10 @@
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.3.1",
     "typescript": "^5"
+  },
+  "overrides": {
+    "next-navigation-guard": {
+      "next": "^14 || ^15 || ^16"
+    }
   }
 }

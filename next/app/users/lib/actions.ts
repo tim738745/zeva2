@@ -14,7 +14,7 @@ import {
 import { govRoles, supplierRoles } from "./constants";
 import { orgIsGovernment } from "./services";
 
-export type UserPayload = Omit<User, "id" | "idp" | "idpSub" | "wasUpdated">;
+export type UserPayload = Omit<User, "id" | "idp" | "idpSub">;
 
 export const updateUser = async (
   id: number,
@@ -48,7 +48,6 @@ export const updateUser = async (
     data: {
       ...data,
       organizationId: user.organization.id,
-      wasUpdated: true,
       roles: undefined,
     },
   });
@@ -128,7 +127,6 @@ export const updateRoles = async (
     },
     data: {
       roles: newRoles,
-      wasUpdated: true,
     },
   });
   return getDataActionResponse(updatedUser.roles);
